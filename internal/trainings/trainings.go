@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode"
 
 	"github.com/Yandex-Practicum/tracker/internal/personaldata"
 	"github.com/Yandex-Practicum/tracker/internal/spentenergy"
@@ -23,11 +24,25 @@ func (t *Training) Parse(datastring string) (err error) {
 		return fmt.Errorf("неверный формат данных")
 	}
 
-	// Парсинг шагов
-	stepsStr := strings.TrimSpace(parts[0])
+	// Парсинг шагов с проверкой на пробелы
+	stepsStr := parts[0]
+
+	// Проверяем, есть ли пробелы в начале или конце
+	if strings.TrimSpace(stepsStr) != stepsStr {
+		return fmt.Errorf("неверный формат шагов")
+	}
+
 	if stepsStr == "" {
 		return fmt.Errorf("неверный формат шагов")
 	}
+
+	// Проверяем, что строка состоит только из цифр (и возможного знака)
+	for _, char := range stepsStr {
+		if !unicode.IsDigit(char) && char != '+' && char != '-' {
+			return fmt.Errorf("неверный формат шагов")
+		}
+	}
+
 	steps, err := strconv.Atoi(stepsStr)
 	if err != nil {
 		return fmt.Errorf("ошибка парсинга шагов: %w", err)
@@ -37,15 +52,27 @@ func (t *Training) Parse(datastring string) (err error) {
 	}
 	t.Steps = steps
 
-	// Парсинг типа тренировки
-	trainingType := strings.TrimSpace(parts[1])
+	// Парсинг типа тренировки с проверкой на пробелы
+	trainingType := parts[1]
+
+	// Проверяем, есть ли пробелы в начале или конце
+	if strings.TrimSpace(trainingType) != trainingType {
+		return fmt.Errorf("неверный формат типа тренировки")
+	}
+
 	if trainingType == "" {
 		return fmt.Errorf("тип тренировки не может быть пустым")
 	}
 	t.TrainingType = trainingType
 
-	// Парсинг продолжительности
-	durationStr := strings.TrimSpace(parts[2])
+	// Парсинг продолжительности с проверкой на пробелы
+	durationStr := parts[2]
+
+	// Проверяем, есть ли пробелы в начале или конце
+	if strings.TrimSpace(durationStr) != durationStr {
+		return fmt.Errorf("неверный формат продолжительности")
+	}
+
 	if durationStr == "" {
 		return fmt.Errorf("продолжительность не может быть пустой")
 	}
@@ -85,7 +112,7 @@ func (t Training) ActionInfo() (string, error) {
 	info += fmt.Sprintf("Длительность: %.2f ч.\n", t.Duration.Hours())
 	info += fmt.Sprintf("Дистанция: %.2f км.\n", distance)
 	info += fmt.Sprintf("Скорость: %.2f км/ч\n", speed)
-	info += fmt.Sprintf("Сожгли калорий: %.2f\n", calories) // Добавляем перевод строки в конце
+	info += fmt.Sprintf("Сожгли калорий: %.2f\n", calories)
 
 	return info, nil
 }

@@ -21,7 +21,7 @@ func Info(dataset []string, dp DataParser) {
 			continue
 		}
 
-		fmt.Println(info)
-		fmt.Println() // Добавляем пустую строку между записями
+		fmt.Print(info)
+		fmt.Println() // Добавляем дополнительный перевод строки
 	}
 }
