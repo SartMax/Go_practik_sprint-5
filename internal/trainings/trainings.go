@@ -85,7 +85,7 @@ func (t Training) ActionInfo() (string, error) {
 	info += fmt.Sprintf("Длительность: %.2f ч.\n", t.Duration.Hours())
 	info += fmt.Sprintf("Дистанция: %.2f км.\n", distance)
 	info += fmt.Sprintf("Скорость: %.2f км/ч\n", speed)
-	info += fmt.Sprintf("Сожгли калорий: %.2f", calories)
+	info += fmt.Sprintf("Сожгли калорий: %.2f\n", calories) // Добавляем перевод строки в конце
 
 	return info, nil
 }

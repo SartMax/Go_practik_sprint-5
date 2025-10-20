@@ -23,16 +23,30 @@ func (ds *DaySteps) Parse(datastring string) (err error) {
 	}
 
 	// Парсинг шагов
-	steps, err := strconv.Atoi(strings.TrimSpace(parts[0]))
+	stepsStr := strings.TrimSpace(parts[0])
+	if stepsStr == "" {
+		return fmt.Errorf("неверный формат шагов")
+	}
+	steps, err := strconv.Atoi(stepsStr)
 	if err != nil {
 		return fmt.Errorf("ошибка парсинга шагов: %w", err)
+	}
+	if steps <= 0 {
+		return fmt.Errorf("количество шагов должно быть положительным")
 	}
 	ds.Steps = steps
 
 	// Парсинг продолжительности
-	duration, err := time.ParseDuration(strings.TrimSpace(parts[1]))
+	durationStr := strings.TrimSpace(parts[1])
+	if durationStr == "" {
+		return fmt.Errorf("продолжительность не может быть пустой")
+	}
+	duration, err := time.ParseDuration(durationStr)
 	if err != nil {
 		return fmt.Errorf("ошибка парсинга продолжительности: %w", err)
+	}
+	if duration <= 0 {
+		return fmt.Errorf("продолжительность должна быть положительной")
 	}
 	ds.Duration = duration
 
@@ -48,7 +62,7 @@ func (ds DaySteps) ActionInfo() (string, error) {
 
 	info := fmt.Sprintf("Количество шагов: %d.\n", ds.Steps)
 	info += fmt.Sprintf("Дистанция составила %.2f км.\n", distance)
-	info += fmt.Sprintf("Вы сожгли %.2f ккал.", calories)
+	info += fmt.Sprintf("Вы сожгли %.2f ккал.\n", calories) // Добавляем перевод строки в конце
 
 	return info, nil
 }
