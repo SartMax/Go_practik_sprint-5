@@ -24,19 +24,37 @@ func (t *Training) Parse(datastring string) (err error) {
 	}
 
 	// Парсинг шагов
-	steps, err := strconv.Atoi(strings.TrimSpace(parts[0]))
+	stepsStr := strings.TrimSpace(parts[0])
+	if stepsStr == "" {
+		return fmt.Errorf("неверный формат шагов")
+	}
+	steps, err := strconv.Atoi(stepsStr)
 	if err != nil {
 		return fmt.Errorf("ошибка парсинга шагов: %w", err)
+	}
+	if steps <= 0 {
+		return fmt.Errorf("количество шагов должно быть положительным")
 	}
 	t.Steps = steps
 
 	// Парсинг типа тренировки
-	t.TrainingType = strings.TrimSpace(parts[1])
+	trainingType := strings.TrimSpace(parts[1])
+	if trainingType == "" {
+		return fmt.Errorf("тип тренировки не может быть пустым")
+	}
+	t.TrainingType = trainingType
 
 	// Парсинг продолжительности
-	duration, err := time.ParseDuration(strings.TrimSpace(parts[2]))
+	durationStr := strings.TrimSpace(parts[2])
+	if durationStr == "" {
+		return fmt.Errorf("продолжительность не может быть пустой")
+	}
+	duration, err := time.ParseDuration(durationStr)
 	if err != nil {
 		return fmt.Errorf("ошибка парсинга продолжительности: %w", err)
+	}
+	if duration <= 0 {
+		return fmt.Errorf("продолжительность должна быть положительной")
 	}
 	t.Duration = duration
 
